@@ -1,6 +1,6 @@
 # radons_workout_app
 
-A new Flutter project.
+workout app for me
 
 ## Getting Started
 
