@@ -1,5 +1,5 @@
 name: radons_workout_app
-description: A new Flutter project.
+description: Fitness app.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -84,6 +84,11 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+  
+  fonts: 
+    - family: AnnieUseYourTelescope
+      fonts:
+        - asset: fonts/AnnieUseYourTelescope-Regular.ttf
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
