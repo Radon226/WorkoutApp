@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'routinePage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -49,67 +50,76 @@ class _HomePageState extends State<HomePage> {
   static Color primary = Color.fromARGB(255, 178, 255, 241);
   static Color secondary = Color.fromARGB(255, 231, 255, 254);
 
-  static bool _clicked = false;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: title,
-      home: Scaffold(
-        //backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        body: Center(
-          child: Column(
-            children: [
-              titleSection,
-              const SizedBox(height: 30),
-              streakSection,
-              const SizedBox(height: 30),
-              startButton,
-              const SizedBox(height: 30),
-              quote,
-            ],
-          ),
+      theme: ThemeData(
+        primaryColor: Color.fromARGB(255, 178, 255, 241),
+        backgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color.fromARGB(255, 178, 255, 241),
+          elevation: 0,
+          centerTitle: true,
+          toolbarHeight: 165,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: primary,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.view_timeline_outlined),
-              label: 'History',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-        ),
+        fontFamily: 'AnnieUsedHerTelescope',
       ),
-    );
-  }
-
-  Widget titleSection = Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: <Widget>[
-      SafeArea(
-        child: Container(
-          color: primary,
-          child: Center(
-            child: Stack(
+      home: SafeArea(
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(150),
+            child: AppBar(
+              title: Stack(
+                children: [
+                  Text(title, style: mainStyle, textAlign: TextAlign.center),
+                  Text(title,
+                      style: mainStyleStroke, textAlign: TextAlign.center),
+                ],
+              ),
+              centerTitle: true,
+            ),
+          ),
+          body: Center(
+            child: Column(
               children: [
-                Text(title, style: mainStyle, textAlign: TextAlign.center),
-                Text(title,
-                    style: mainStyleStroke, textAlign: TextAlign.center),
+                const SizedBox(height: 30),
+                streakSection,
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 15, bottom: 15),
+                    side: const BorderSide(width: 6), //adds border
+                    primary: secondary,
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      Text(
+                        'START',
+                        style: mainStyle,
+                      ),
+                      Text(
+                        'START',
+                        style: mainStyleStroke,
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RoutinePage()));
+                  },
+                ),
+                const SizedBox(height: 30),
+                quote,
               ],
             ),
           ),
         ),
       ),
-    ],
-  );
+    );
+  }
 
   Widget streakSection = Container(
     margin: const EdgeInsets.only(left: 30, right: 30),
@@ -135,29 +145,8 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 
-  Widget startButton = ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-      side: const BorderSide(width: 6), //adds border
-      primary: secondary,
-    ),
-    child: Stack(children: <Widget>[
-      Text(
-        'START',
-        style: mainStyle,
-      ),
-      Text(
-        'START',
-        style: mainStyleStroke,
-      ),
-    ]),
-  );
-
   static String placeholderQuote =
-      "You just wait. I'm going to be the biggest Chineeeeeeeeeeeeeeeeeese Star in the world. - Bruce Leeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-
-  static String placeHolderQuote1 = "hello";
+      "You just wait. I'm going to be the biggest Chinese Star in the world. - Bruce Lee";
 
   Widget quote = Container(
     margin: const EdgeInsets.only(left: 30, right: 30),
