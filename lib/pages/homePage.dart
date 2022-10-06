@@ -1,51 +1,15 @@
 import 'package:flutter/material.dart';
 import 'routinePage.dart';
+import 'package:radons_workout_app/essentials/textTool.dart';
 
 class HomePage extends StatefulWidget {
   @override
+  static TextTool textTool = TextTool();
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  static TextStyle mainStyleStroke = TextStyle(
-    fontSize: 65,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: 1.1,
-    letterSpacing: 6,
-    foreground: Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..color = Colors.black,
-  );
-
-  static TextStyle mainStyle = const TextStyle(
-    fontSize: 65,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: 1.1,
-    letterSpacing: 6,
-    color: Colors.black,
-  );
-
-  static TextStyle secStyleStroke = TextStyle(
-    fontSize: 20,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: 1.1,
-    letterSpacing: 6,
-    foreground: Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..color = Colors.black,
-  );
-
-  static TextStyle secStyle = const TextStyle(
-    fontSize: 20,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: 1.1,
-    letterSpacing: 6,
-    color: Colors.black,
-  );
-
-  static String title = 'THE \n WORKOUT';
+  static String title = 'THE \nWORKOUT';
 
   static Color primary = Color.fromARGB(255, 178, 255, 241);
   static Color secondary = Color.fromARGB(255, 231, 255, 254);
@@ -69,13 +33,7 @@ class _HomePageState extends State<HomePage> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(150),
             child: AppBar(
-              title: Stack(
-                children: [
-                  Text(title, style: mainStyle, textAlign: TextAlign.center),
-                  Text(title,
-                      style: mainStyleStroke, textAlign: TextAlign.center),
-                ],
-              ),
+              title: HomePage.textTool.writeText1(title, true),
               centerTitle: true,
             ),
           ),
@@ -92,23 +50,10 @@ class _HomePageState extends State<HomePage> {
                     side: const BorderSide(width: 6), //adds border
                     primary: secondary,
                   ),
-                  child: Stack(
-                    children: <Widget>[
-                      Text(
-                        'START',
-                        style: mainStyle,
-                      ),
-                      Text(
-                        'START',
-                        style: mainStyleStroke,
-                      ),
-                    ],
-                  ),
+                  child: HomePage.textTool.writeText1('START', false),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RoutinePage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => RoutinePage()));
                   },
                 ),
                 const SizedBox(height: 30),
@@ -124,24 +69,19 @@ class _HomePageState extends State<HomePage> {
   Widget streakSection = Container(
     margin: const EdgeInsets.only(left: 30, right: 30),
     color: primary,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20, top: 10),
-          child: Stack(
-            children: <Widget>[
-              Text('Streak:', style: mainStyle, textAlign: TextAlign.center),
-              Text('Streak:',
-                  style: mainStyleStroke, textAlign: TextAlign.center),
-            ],
-          ),
-        ),
-        const Placeholder(
-          fallbackHeight: 170,
-          fallbackWidth: 100,
-        )
-      ],
+    child: Center(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+              padding: const EdgeInsets.only(right: 20, top: 10),
+              child: HomePage.textTool.writeText2('STREAK', false)),
+          const Placeholder(
+            fallbackHeight: 170,
+            fallbackWidth: 100,
+          )
+        ],
+      ),
     ),
   );
 
@@ -149,21 +89,9 @@ class _HomePageState extends State<HomePage> {
       "You just wait. I'm going to be the biggest Chinese Star in the world. - Bruce Lee";
 
   Widget quote = Container(
-    margin: const EdgeInsets.only(left: 30, right: 30),
-    constraints: const BoxConstraints(
-        maxHeight: 110), //constraints container to max height
-    color: primary,
-    child: Stack(children: <Widget>[
-      Text(
-        placeholderQuote,
-        style: secStyle,
-        textAlign: TextAlign.center,
-      ),
-      Text(
-        placeholderQuote,
-        style: secStyleStroke,
-        textAlign: TextAlign.center,
-      ),
-    ]),
-  );
+      margin: const EdgeInsets.only(left: 30, right: 30),
+      constraints: const BoxConstraints(
+          maxHeight: 110), //constraints container to max height
+      color: primary,
+      child: HomePage.textTool.writeText3(placeholderQuote, false));
 }

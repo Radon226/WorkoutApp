@@ -1,51 +1,34 @@
 import 'package:flutter/material.dart';
+import 'workoutPage.dart';
+import 'package:radons_workout_app/essentials/dayCard.dart';
+import 'package:radons_workout_app/essentials/weeklyRoutine.dart';
+import 'package:radons_workout_app/essentials/workout.dart';
+import 'package:radons_workout_app/essentials/textTool.dart';
 
 class RoutinePage extends StatefulWidget {
-  const RoutinePage({Key? key}) : super(key: key);
-
   @override
   State<RoutinePage> createState() => _RoutinePageState();
+  static TextTool textTool = TextTool();
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-  static TextStyle mainStyleStroke = TextStyle(
-    fontSize: 65,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: .82,
-    letterSpacing: 6,
-    foreground: Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..color = Colors.black,
-  );
+  late WeeklyRoutine week;
+  late List<Workout> listOfWorkout;
 
-  static TextStyle mainStyle = const TextStyle(
-    fontSize: 65,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: .82,
-    letterSpacing: 6,
-    color: Colors.black,
-  );
+  void createRoutine() {
+    week = WeeklyRoutine();
+    week.createWorkouts(7, 7, 7, 7, 60);
+    listOfWorkout = week.getRoutine();
+  }
 
-  static TextStyle secStyleStroke = TextStyle(
-    fontSize: 48,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: .82,
-    letterSpacing: 6,
-    foreground: Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..color = Colors.black,
-  );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    createRoutine();
+  }
 
-  static TextStyle secStyle = const TextStyle(
-    fontSize: 48,
-    fontFamily: 'AnnieUseYourTelescope',
-    height: .82,
-    letterSpacing: 6,
-    color: Colors.black,
-  );
-
+  bool _customTileExpanded = false;
   String title = 'The \n Routine';
   double appBarHeight = 128;
   @override
@@ -55,15 +38,10 @@ class _RoutinePageState extends State<RoutinePage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(appBarHeight),
           child: AppBar(
+            //appbar
             backgroundColor: Color.fromARGB(255, 159, 196, 226),
             elevation: 0,
-            title: Stack(
-              children: [
-                Text(title, style: mainStyle, textAlign: TextAlign.center),
-                Text(title,
-                    style: mainStyleStroke, textAlign: TextAlign.center),
-              ],
-            ),
+            title: RoutinePage.textTool.writeText1('The \nRoutine', true),
             centerTitle: true,
             toolbarHeight: appBarHeight,
           ),
@@ -71,55 +49,88 @@ class _RoutinePageState extends State<RoutinePage> {
         body: Center(
           child: Column(
             children: [
-              containerRoutine,
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.only(
-                      left: 25, right: 25, top: 25, bottom: 25),
-                  side: const BorderSide(width: 6), //adds border
-                  primary: Colors.lightBlue,
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    Text(
-                      'LETS DO IT',
-                      style: secStyle,
+              Container(
+                //blue container that holds week 1 and purple container
+                constraints:
+                    const BoxConstraints(minHeight: 430, maxHeight: 430),
+                color: Colors.blue,
+                margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                child: Column(
+                  //column which holds week 1 and purple container
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                      ),
+                      child: RoutinePage.textTool.writeText2('Week 1', false),
                     ),
-                    Text(
-                      'LETS DO IT',
-                      style: secStyleStroke,
+                    Container(
+                      height: 370,
+                      color: Colors.purpleAccent,
+                      child: SingleChildScrollView(
+                        //allows scrolling inside container full of daycards
+                        child: Column(
+                          children: [
+                            Padding(
+                              //daycard
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[0], 1),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[1], 2),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[2], 3),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[3], 4),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[4], 5),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[5], 6),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: DayCard(listOfWorkout[6], 7),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => WorkoutPage()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                        left: 25, right: 25, top: 20, bottom: 10),
+                    side: const BorderSide(width: 6), //adds border
+                    backgroundColor: Colors.lightBlue,
+                  ),
+                  child: RoutinePage.textTool.writeText2('START', false)),
             ],
           ),
         ),
       ),
     );
   }
-
-  //contains list of cards for the week
-  Widget containerRoutine = Container(
-    constraints: const BoxConstraints(minHeight: 475),
-    color: Colors.blue,
-    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(
-              top: 20,
-              bottom: 15,
-            ),
-            child: Stack(
-              children: <Widget>[
-                Text('Week 1', style: secStyle),
-                Text('Week 1', style: secStyleStroke),
-              ],
-            )),
-      ],
-    ),
-  );
 }

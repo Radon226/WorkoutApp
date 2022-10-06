@@ -3,6 +3,7 @@ import 'pages/homePage.dart';
 import 'pages/historyPage.dart';
 import 'pages/workoutPage.dart';
 import 'pages/routinePage.dart';
+import 'essentials/weeklyRoutine.dart';
 
 void main() {
   runApp(MaterialApp(
