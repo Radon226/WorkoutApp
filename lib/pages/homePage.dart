@@ -1,41 +1,43 @@
 import 'package:flutter/material.dart';
 import 'routinePage.dart';
-import 'package:radons_workout_app/essentials/textTool.dart';
+import 'package:radons_workout_app/essentials/themeTool.dart';
 
 class HomePage extends StatefulWidget {
   @override
-  static TextTool textTool = TextTool();
+  static ThemeTool themeTool = ThemeTool();
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   static String title = 'THE \nWORKOUT';
 
-  static Color primary = Color.fromARGB(255, 178, 255, 241);
-  static Color secondary = Color.fromARGB(255, 231, 255, 254);
+  static Color background = HomePage.themeTool.getBackground();
+  static Color primary = HomePage.themeTool.getPrimary();
+  static Color secondary = HomePage.themeTool.getSecondary();
+
+  double appBarHeight = HomePage.themeTool.getAppbarHeight() + 28;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Color.fromARGB(255, 178, 255, 241),
-        backgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 178, 255, 241),
+          backgroundColor: primary,
           elevation: 0,
           centerTitle: true,
-          toolbarHeight: 165,
+          toolbarHeight: appBarHeight,
         ),
         fontFamily: 'AnnieUsedHerTelescope',
       ),
       home: SafeArea(
         child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(150),
-            child: AppBar(
-              title: HomePage.textTool.writeText1(title, true),
-              centerTitle: true,
+          backgroundColor: background,
+          appBar: AppBar(
+            title: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: HomePage.themeTool.writeTitle(title, true),
             ),
+            centerTitle: true,
           ),
           body: Center(
             child: Column(
@@ -46,11 +48,11 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
-                        left: 25, right: 25, top: 15, bottom: 15),
+                        left: 25, right: 25, top: 30, bottom: 15),
                     side: const BorderSide(width: 6), //adds border
-                    primary: secondary,
+                    backgroundColor: secondary,
                   ),
-                  child: HomePage.textTool.writeText1('START', false),
+                  child: HomePage.themeTool.writeTitle('START', false),
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => RoutinePage()));
@@ -67,18 +69,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget streakSection = Container(
-    margin: const EdgeInsets.only(left: 30, right: 30),
-    color: primary,
+    margin: const EdgeInsets.only(left: 20, right: 20),
+    //color: secondary,
     child: Center(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
               padding: const EdgeInsets.only(right: 20, top: 10),
-              child: HomePage.textTool.writeText2('STREAK', false)),
+              child: HomePage.themeTool.writeSubtitle('STREAK:', false)),
           const Placeholder(
             fallbackHeight: 170,
-            fallbackWidth: 100,
+            fallbackWidth: 120,
           )
         ],
       ),
@@ -86,12 +88,12 @@ class _HomePageState extends State<HomePage> {
   );
 
   static String placeholderQuote =
-      "You just wait. I'm going to be the biggest Chinese Star in the world. - Bruce Lee";
+      "You just wait. I'm going to be the biggest Chinese Star in the world.\n\nBruce Lee";
 
   Widget quote = Container(
       margin: const EdgeInsets.only(left: 30, right: 30),
       constraints: const BoxConstraints(
           maxHeight: 110), //constraints container to max height
-      color: primary,
-      child: HomePage.textTool.writeText3(placeholderQuote, false));
+      //color: secondary,
+      child: HomePage.themeTool.writeSmall(placeholderQuote, true));
 }

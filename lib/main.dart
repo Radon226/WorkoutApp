@@ -22,12 +22,12 @@ class _PageNavigatorState extends State<PageNavigator> {
     super.initState();
   }
 
-  static Color primary = Color.fromARGB(255, 178, 255, 241);
+  static Color primary = Colors.lightBlueAccent;
 
   int _currentIndex = 0;
   static List<Widget> _widgetPages = <Widget>[
     HomePage(),
-    Center(child: Text('history')),
+    HistoryPage(),
     Center(child: Text('settings')),
   ];
 

@@ -1,75 +1,88 @@
 import 'package:radons_workout_app/essentials/workout.dart';
 import 'package:radons_workout_app/essentials/exercise.dart';
 
+//should only be created once a week
 class WeeklyRoutine {
   List<Workout> _weekRoutine = [];
-  late int _timeSpentExerc; //weekly time spent working out
-  late int _week;
+  final int _week;
+  final DateTime _dateCreated;
 
-  WeeklyRoutine();
+  WeeklyRoutine(this._week, this._dateCreated);
 
   //name, restPerSet
-  Workout _upperBody = Workout('UPPER', 60);
-  Workout _lowerBody = Workout('LOWER', 60);
-  Workout _rest = Workout('REST', 0);
-  Workout _test = Workout('TEST', 60);
+  late Workout _upperBody1;
+  late Workout _lowerBody2;
+  late Workout _rest3;
+  late Workout _upperBody4;
+  late Workout _lowerBody5;
+  late Workout _rest6;
+  late Workout _test7;
 
   //assigns workout to corresponding day
   void createWorkouts(int sets, hardReps, mediumReps, easyReps, double time) {
-    //name, sets, reps, time
-    //UPPER BODY EXERCISES (7)
-    _upperBody.addExercise(Exercise('Pushups', sets, mediumReps, time));
-    _upperBody.addExercise(Exercise('Dips', sets, mediumReps, time));
-    _upperBody.addExercise(Exercise('Rows', sets, hardReps, time));
-    _upperBody.addExercise(Exercise('Pullups', sets, hardReps, time));
-    _upperBody.addExercise(Exercise('Chinups', sets, hardReps, time));
-    _upperBody.addExercise(Exercise('Bicycle Crunches', sets, easyReps, time));
-    _upperBody.addExercise(Exercise.timeOnly('Planks', sets, time));
+    _upperBody1 = Workout('UPPER', 60, _dateCreated);
+    _lowerBody2 =
+        Workout('LOWER', 60, _dateCreated.add(const Duration(days: 1)));
+    _rest3 = Workout('REST', 0, _dateCreated.add(const Duration(days: 2)));
+    _upperBody4 =
+        Workout('UPPER', 60, _dateCreated.add(const Duration(days: 3)));
+    _lowerBody5 =
+        Workout('LOWER', 60, _dateCreated.add(const Duration(days: 4)));
+    _rest6 = Workout('REST', 0, _dateCreated.add(const Duration(days: 5)));
+    _test7 = Workout('TEST', 60, _dateCreated.add(const Duration(days: 6)));
 
-    //LOWER BODY EXERCISES (6)
-    _lowerBody.addExercise(Exercise('Calf Raises', sets, mediumReps, time));
-    _lowerBody.addExercise(Exercise('Glute Bridges', sets, easyReps, time));
-    _lowerBody.addExercise(Exercise('Squats', sets, mediumReps, time));
-    _lowerBody.addExercise(Exercise('Split Squats', sets, hardReps, time));
-    _lowerBody.addExercise(Exercise('Lateral Lunges', sets, mediumReps, time));
-    _lowerBody
-        .addExercise(Exercise('Bicycle Crunches', sets, mediumReps, time));
+    addUpperExercises(_upperBody1, sets, hardReps, mediumReps, easyReps, time);
+    addUpperExercises(_upperBody4, sets, hardReps, mediumReps, easyReps, time);
 
-    //STRECHES AFTER UPPER WORKOUT (5)
-    _upperBody
-        .addStretch(Exercise.timeOnly('Arm And Wrist Stretch', 2, time / 2));
-    _upperBody.addStretch(Exercise.timeOnly('Child Pose', 0, time));
-    _upperBody.addStretch(Exercise.timeOnly('Cobra Pose', 0, time));
-    _upperBody.addStretch(Exercise.timeOnly('Bicep Stretch', 0, time));
-    _upperBody.addStretch(Exercise.timeOnly('Tricep Stretch', 0, time));
-
-    //STRETCHES AFTER LOWER WORKOUT (4)
-    _lowerBody.addStretch(Exercise.timeOnly('Quad Stretch', 2, time / 2));
-    _lowerBody.addStretch(Exercise.timeOnly('Side Lunge Stretch', 2, time / 2));
-    _lowerBody.addStretch(Exercise.timeOnly('Hamstring Stretch', 2, time / 2));
-    _lowerBody.addStretch(Exercise.timeOnly('Butterfly', 0, time));
-
-    print('I created and assigned the exercises');
+    addLowerExercises(_lowerBody2, sets, hardReps, mediumReps, easyReps, time);
+    addLowerExercises(_lowerBody5, sets, hardReps, mediumReps, easyReps, time);
 
     _weekRoutine = [
-      _upperBody,
-      _lowerBody,
-      _rest,
-      _upperBody,
-      _lowerBody,
-      _rest,
-      _test,
+      _upperBody1,
+      _lowerBody2,
+      _rest3,
+      _upperBody4,
+      _lowerBody5,
+      _rest6,
+      _test7,
     ];
   }
 
-  List<Workout> getRoutine() => _weekRoutine;
+  void addUpperExercises(
+      Workout workout, int sets, hardReps, mediumReps, easyReps, double time) {
+    //UPPER BODY EXERCISES (7)
+    workout.addExercise(Exercise('Pushups', sets, mediumReps, time));
+    workout.addExercise(Exercise('Dips', sets, mediumReps, time));
+    workout.addExercise(Exercise('Rows', sets, hardReps, time));
+    workout.addExercise(Exercise('Pullups', sets, hardReps, time));
+    workout.addExercise(Exercise('Chinups', sets, hardReps, time));
+    workout.addExercise(Exercise.timeOnly('Planks', sets, time));
 
-  void printWeekRoutine() {
-    print('Routine:');
-    _upperBody.printWorkout();
-    print('');
-    _lowerBody.printWorkout();
-    print('');
-    _test.printWorkout();
+    //STRECHES AFTER UPPER WORKOUT (5)
+    workout.addStretch(Exercise.timeOnly('Arm And Wrist Stretch', 2, time / 2));
+    workout.addStretch(Exercise.timeOnly('Child Pose', 0, time));
+    workout.addStretch(Exercise.timeOnly('Cobra Pose', 0, time));
+    workout.addStretch(Exercise.timeOnly('Bicep Stretch', 0, time));
+    workout.addStretch(Exercise.timeOnly('Tricep Stretch', 0, time));
   }
+
+  void addLowerExercises(
+      Workout workout, int sets, hardReps, mediumReps, easyReps, double time) {
+    //LOWER BODY EXERCISES (6)
+    workout.addExercise(Exercise('Calf Raises', sets, mediumReps, time));
+    workout.addExercise(Exercise('Glute Bridges', sets, easyReps, time));
+    workout.addExercise(Exercise('Squats', sets, mediumReps, time));
+    workout.addExercise(Exercise('Split Squats', sets, hardReps, time));
+    workout.addExercise(Exercise('Lateral Lunges', sets, mediumReps, time));
+    workout.addExercise(Exercise('Bicycle Crunches', sets, mediumReps, time));
+
+    //STRETCHES AFTER LOWER WORKOUT (4)
+    workout.addStretch(Exercise.timeOnly('Quad Stretch', 2, time / 2));
+    workout.addStretch(Exercise.timeOnly('Side Lunge Stretch', 2, time / 2));
+    workout.addStretch(Exercise.timeOnly('Hamstring Stretch', 2, time / 2));
+    workout.addStretch(Exercise.timeOnly('Butterfly', 0, time));
+  }
+
+  List<Workout> getWeekRoutine() => _weekRoutine;
+  int getWeek() => _week;
 }

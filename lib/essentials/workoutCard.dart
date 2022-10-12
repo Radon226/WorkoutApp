@@ -1,43 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:radons_workout_app/essentials/workout.dart';
 import 'package:radons_workout_app/essentials/exercise.dart';
-import 'package:radons_workout_app/essentials/textTool.dart';
+import 'package:radons_workout_app/essentials/themeTool.dart';
 
-class DayCard extends StatefulWidget {
+//Card that is listed for the weekly routine. Contains the day and type of workout.
+class WorkoutCard extends StatefulWidget {
   @override
-  //write constructor for class DayCard here inside the main class
-  int day;
-  DayCard(this.workoutDay, this.day);
-  Workout workoutDay;
-  static TextTool textTool =
-      TextTool(); //declare TextTool inside main class and call
-  State<DayCard> createState() => _DayCardState();
+  //declare TextTool inside main class and call
+  static ThemeTool themeTool = ThemeTool();
+
+  //write constructor for class WorkoutCard here inside the main class
+  Workout workout;
+
+  WorkoutCard(this.workout);
+
+  State<WorkoutCard> createState() => _WorkoutCardState();
 }
 
-class _DayCardState extends State<DayCard> {
-  //use late, otherwise there is an error
-  late Workout workoutDay;
+class _WorkoutCardState extends State<WorkoutCard> {
+  //use late when initializing only, otherwise there is an error
+  late Workout workout;
   late String nameOfWorkout;
+
   late List<dynamic> warmups;
   late List<dynamic> exercs;
   late List<dynamic> stretches;
-  late int day;
+
+  late DateTime date;
+  late String dateFormatted;
   bool _customTileExpanded = false;
 
   @override
   //remember to assign variables inside initState before super.initState()
   void initState() {
-    //use widget.variableName to get value of variable from main class DayCard
-    workoutDay = widget.workoutDay;
-    day = widget.day;
-    nameOfWorkout = workoutDay.getName();
-    warmups = workoutDay.getWarmup();
-    exercs = workoutDay.getExerc();
-    stretches = workoutDay.getStretch();
+    //use widget.variableName to get value of variable from main class WorkoutCard
+    workout = widget.workout;
+    nameOfWorkout = workout.getName();
+
+    warmups = workout.getWarmup();
+    exercs = workout.getExerc();
+    stretches = workout.getStretch();
+
+    date = workout.getDate();
+    dateFormatted = DateFormat('MM/dd').format(date);
     super.initState();
   }
 
   Widget build(BuildContext context) {
+    if (nameOfWorkout == "REST") {
+      return restCard();
+    } else {
+      return nonRestCard();
+    }
+  }
+
+  Widget nonRestCard() {
     return Container(
       //the container that holds the expansion tile
       color: Colors.black,
@@ -45,17 +64,15 @@ class _DayCardState extends State<DayCard> {
         padding: const EdgeInsets.all(5.0),
         child: ExpansionTile(
           //the expansion tile
-          title: DayCard.textTool.writeText2('Day $day: $nameOfWorkout', false),
-          trailing: Icon(_customTileExpanded
-              ? Icons.arrow_drop_down_circle
-              : Icons.arrow_drop_down),
-          backgroundColor: Colors.white,
+          title: WorkoutCard.themeTool
+              .writeNorm('$dateFormatted: $nameOfWorkout', false),
+          backgroundColor: Color.fromARGB(255, 233, 248, 255),
           collapsedBackgroundColor: Colors.white,
           children: <Widget>[
             //contains the list of workout exercises (the children of expansion tile)
             Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 30),
+                padding: const EdgeInsets.only(top: 10, left: 30),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -90,8 +107,24 @@ class _DayCardState extends State<DayCard> {
       ),
     );
   }
+
+  Widget restCard() {
+    return Container(
+      color: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: ExpansionTile(
+          title: WorkoutCard.themeTool
+              .writeNorm('$dateFormatted: $nameOfWorkout', false),
+          backgroundColor: Color.fromARGB(255, 233, 248, 255),
+          collapsedBackgroundColor: Colors.white,
+        ),
+      ),
+    );
+  }
 }
 
+//Used to list an item inside the card
 class listItem extends StatelessWidget {
   listItem(this.text);
   String text;
@@ -106,7 +139,7 @@ class listItem extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5, right: 10),
             child: Icon(Icons.circle, size: 5),
           ),
-          Expanded(child: DayCard.textTool.writeText2(text, false)),
+          Expanded(child: WorkoutCard.themeTool.writeNorm(text, false)),
         ],
       ),
     );
