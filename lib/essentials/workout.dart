@@ -1,4 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:intl/intl.dart';
 import 'package:radons_workout_app/essentials/exercise.dart';
+
+// REQUIREMENTS:
+// one workout represents one day
+// a workout contains a list of exercises, one list for warmups, one for main, and one for stretching
 
 //mainly use to make workout for the DAY
 //example: want to make a workout list for upper body for day 1 and lower body for day 2
@@ -10,66 +18,85 @@ import 'package:radons_workout_app/essentials/exercise.dart';
 //instead of having to manually add them
 //however, when working out, we want the app to move to one element(exercise) to the next
 //need to make a concept of when user is doing exercise that requires sets and reps
+
+class WorkoutFields {
+  static final List<String> values = [name, restPerSet, date, listOfExercs];
+
+  static const String name = 'name';
+  static const String restPerSet = 'restPerSet';
+  static const String date = 'date';
+  static const String listOfExercs = 'listOfExercs';
+}
+
 class Workout {
-  String _name;
-  int _restPerSet;
-  late int _lengthOfWork;
+  String name;
+  final int restPerSet;
+  DateTime date;
+  bool isFinished = false;
+  List<Exercise> listOfExcercs;
 
-  DateTime _date;
-
-  bool _isFinished = false;
-
-  Workout(this._name, this._restPerSet, this._date);
-
-  List<Exercise> _listOfWarmups = [
-    Exercise.timeOnly('Jumping Jacks', 0, 60),
-    Exercise.repsOnly('Arm Circles', 2, 20),
-    Exercise.timeOnly('Side Planks', 2, 45) //45s each side, hence 2 sets
-  ];
-
-  List<Exercise> _listOfExerc = [];
-
-  List<Exercise> _listOfStretches = [];
+  Workout(
+      {required this.name,
+      required this.restPerSet,
+      required this.date,
+      required this.listOfExcercs});
 
   void addExercise(Exercise exercise) {
-    _listOfExerc.add(exercise);
+    listOfExcercs.add(exercise);
   }
 
-  void addWarmup(Exercise exercise) {
-    _listOfWarmups.add(exercise);
-  }
-
-  void addStretch(Exercise exercise) {
-    _listOfStretches.add(exercise);
-  }
-
-  //return workout list
-  List getExerc() => _listOfExerc;
-  List getWarmup() => _listOfWarmups;
-  List getStretch() => _listOfStretches;
-
-  String getName() => _name;
-  int getRestPerSet() => _restPerSet;
-  DateTime getDate() => _date;
-  bool getStateOfWorkout() => _isFinished;
+  String getName() => name;
+  int getRestPerSet() => restPerSet;
+  DateTime getDate() => date;
+  List<Exercise> getListOfExercs() => listOfExcercs;
+  bool getStateOfWorkout() => isFinished;
 
   void finishWorkout() {
-    _isFinished = true;
+    isFinished = true;
   }
 
   void setDate(DateTime date) {
-    _date = date;
+    date = date;
   }
 
   void setName(String name) {
-    _name = name;
+    name = name;
   }
 
-  void printWorkout() {
-    int length = _listOfExerc.length;
-    print('Workout: $_name || $length');
-    for (int i = 0; i < length; i++) {
-      print('$i ' + _listOfExerc[i].getName());
-    }
+  Map<String, Object?> toJson() {
+    List<Map> _listOfExcercs = listOfExcercs.map((i) => i.toJson()).toList();
+
+    //converts date object to a formatted string
+    var formatter = DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(date);
+
+    final map = {
+      WorkoutFields.name: name,
+      WorkoutFields.date: formattedDate,
+      WorkoutFields.restPerSet: restPerSet,
+      'isFinished': isFinished,
+      WorkoutFields.listOfExercs: _listOfExcercs,
+    };
+
+    return map;
+  }
+
+  factory Workout.fromJson(Map<String, Object?> json) {
+    //converts json to map list
+    var exercJsonToList = (json[WorkoutFields.listOfExercs]) as List;
+
+    List<Exercise> _listOfExercs =
+        exercJsonToList.map((i) => Exercise.fromJson(i)).toList();
+
+    //log('workout - fromJson(): called Exercise.fromJson');
+
+    var formatter = DateFormat('yyyy-MM-dd'); // Save this to DB
+    DateTime date = formatter.parse(json['date'] as String);
+
+    return Workout(
+        name: json[WorkoutFields.name] as String,
+        restPerSet: json[WorkoutFields.restPerSet] as int,
+        date: date,
+        listOfExcercs: _listOfExercs);
   }
 }

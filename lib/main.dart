@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'db/DatabaseHelper.dart';
 import 'pages/homePage.dart';
 import 'pages/historyPage.dart';
 import 'pages/workoutPage.dart';
 import 'pages/routinePage.dart';
 import 'essentials/weeklyRoutine.dart';
 
-void main() {
+final dbHelper = DatabaseHelper.instance;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // initialize the database
+  await dbHelper.database;
+
   runApp(MaterialApp(
     home: PageNavigator(),
   ));

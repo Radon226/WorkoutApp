@@ -14,7 +14,7 @@ class WorkoutCard extends StatefulWidget {
   //write constructor for class WorkoutCard here inside the main class
   Workout workout;
 
-  WorkoutCard(this.workout);
+  WorkoutCard(this.workout, {super.key});
 
   State<WorkoutCard> createState() => _WorkoutCardState();
 }
@@ -24,9 +24,9 @@ class _WorkoutCardState extends State<WorkoutCard> {
   late Workout workout;
   late String nameOfWorkout;
 
-  late List<dynamic> warmups;
-  late List<dynamic> exercs;
-  late List<dynamic> stretches;
+  late List<Exercise> warmups;
+  late List<Exercise> mainExercs;
+  late List<Exercise> stretches;
 
   late DateTime date;
   late String dateFormatted;
@@ -39,13 +39,21 @@ class _WorkoutCardState extends State<WorkoutCard> {
     workout = widget.workout;
     nameOfWorkout = workout.getName();
 
-    warmups = workout.getWarmup();
-    exercs = workout.getExerc();
-    stretches = workout.getStretch();
+    separateExercs();
 
     date = workout.getDate();
     dateFormatted = DateFormat('MM/dd').format(date);
     super.initState();
+  }
+
+  void separateExercs() {
+    List<Exercise> allExercs = workout.getListOfExercs();
+
+    for (int i = 0; i < allExercs.length; i++) {
+      if (allExercs[i].getType() == 0) warmups.add(allExercs[i]);
+      if (allExercs[i].getType() == 1) mainExercs.add(allExercs[i]);
+      if (allExercs[i].getType() == 2) stretches.add(allExercs[i]);
+    }
   }
 
   Widget build(BuildContext context) {
@@ -86,7 +94,7 @@ class _WorkoutCardState extends State<WorkoutCard> {
 
                       listItem('Workout'),
 
-                      for (Exercise index in exercs)
+                      for (Exercise index in mainExercs)
                         Padding(
                           padding: const EdgeInsets.only(left: 30),
                           child: listItem(index.getName()),

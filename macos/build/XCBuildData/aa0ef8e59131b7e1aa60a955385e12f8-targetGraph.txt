@@ -1,0 +1,10 @@
+Target dependency graph (4 targets)
+FMDB in Pods, no dependencies
+FlutterMacOS in Pods, no dependencies
+sqflite in Pods, depends on:
+FMDB in Pods (explicit)
+FlutterMacOS in Pods (explicit)
+Pods-Runner in Pods, depends on:
+FMDB in Pods (explicit)
+FlutterMacOS in Pods (explicit)
+sqflite in Pods (explicit)

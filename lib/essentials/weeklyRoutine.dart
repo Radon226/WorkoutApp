@@ -1,88 +1,100 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:intl/intl.dart';
 import 'package:radons_workout_app/essentials/workout.dart';
-import 'package:radons_workout_app/essentials/exercise.dart';
+
+const String tableWeeklyRoutines = 'weeklyRoutines';
+
+//for WorkoutDatabase
+class WeeklyRoutineFields {
+  static final List<String> values = [id, week, dateCreated, listOfWorkouts];
+
+  static const String id = 'id';
+  static const String week = 'week';
+  static const String dateCreated = 'dateCreated';
+  static const String listOfWorkouts = 'listOfWorkouts';
+}
 
 //should only be created once a week
 class WeeklyRoutine {
-  List<Workout> _weekRoutine = [];
-  final int _week;
-  final DateTime _dateCreated;
+  final int? id;
+  final int week;
+  final DateTime dateCreated;
+  final List<Workout> listOfWorkouts;
 
-  WeeklyRoutine(this._week, this._dateCreated);
+  const WeeklyRoutine(
+      {this.id,
+      required this.week,
+      required this.dateCreated,
+      required this.listOfWorkouts});
 
-  //name, restPerSet
-  late Workout _upperBody1;
-  late Workout _lowerBody2;
-  late Workout _rest3;
-  late Workout _upperBody4;
-  late Workout _lowerBody5;
-  late Workout _rest6;
-  late Workout _test7;
+  int? getId() => id;
+  int getWeek() => week;
+  DateTime getDate() => dateCreated;
+  List<Workout> getlistOfWorkouts() => listOfWorkouts;
 
-  //assigns workout to corresponding day
-  void createWorkouts(int sets, hardReps, mediumReps, easyReps, double time) {
-    _upperBody1 = Workout('UPPER', 60, _dateCreated);
-    _lowerBody2 =
-        Workout('LOWER', 60, _dateCreated.add(const Duration(days: 1)));
-    _rest3 = Workout('REST', 0, _dateCreated.add(const Duration(days: 2)));
-    _upperBody4 =
-        Workout('UPPER', 60, _dateCreated.add(const Duration(days: 3)));
-    _lowerBody5 =
-        Workout('LOWER', 60, _dateCreated.add(const Duration(days: 4)));
-    _rest6 = Workout('REST', 0, _dateCreated.add(const Duration(days: 5)));
-    _test7 = Workout('TEST', 60, _dateCreated.add(const Duration(days: 6)));
+  WeeklyRoutine copy(
+          {int? id,
+          int? week,
+          DateTime? dateCreated,
+          List<Workout>? listOfWorkouts}) =>
+      WeeklyRoutine(
+        id: id ?? this.id,
+        week: week ?? this.week,
+        dateCreated: dateCreated ?? this.dateCreated,
+        listOfWorkouts: listOfWorkouts ?? this.listOfWorkouts,
+      );
 
-    addUpperExercises(_upperBody1, sets, hardReps, mediumReps, easyReps, time);
-    addUpperExercises(_upperBody4, sets, hardReps, mediumReps, easyReps, time);
+  Map<String, Object?> toMap() {
+    //log('weeklyRoutine - toJson(): Starting method...');
 
-    addLowerExercises(_lowerBody2, sets, hardReps, mediumReps, easyReps, time);
-    addLowerExercises(_lowerBody5, sets, hardReps, mediumReps, easyReps, time);
+    List<Map> listOfWorkouts =
+        this.listOfWorkouts.map((i) => i.toJson()).toList();
 
-    _weekRoutine = [
-      _upperBody1,
-      _lowerBody2,
-      _rest3,
-      _upperBody4,
-      _lowerBody5,
-      _rest6,
-      _test7,
-    ];
+    //turns into json/String (REMEMBER JSON IS A STRING)
+    String encodedList = jsonEncode(listOfWorkouts);
+
+    //converts date object to a formatted string
+    var formatter = DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(dateCreated);
+
+    //returns a map
+    final map = {
+      WeeklyRoutineFields.id: id,
+      WeeklyRoutineFields.week: week,
+      WeeklyRoutineFields.dateCreated: formattedDate,
+      WeeklyRoutineFields.listOfWorkouts: encodedList,
+    };
+
+    map.removeWhere((key, value) => value == null);
+
+    //log('weeklyRoutine - toMap(): returning map');
+
+    return map;
   }
 
-  void addUpperExercises(
-      Workout workout, int sets, hardReps, mediumReps, easyReps, double time) {
-    //UPPER BODY EXERCISES (7)
-    workout.addExercise(Exercise('Pushups', sets, mediumReps, time));
-    workout.addExercise(Exercise('Dips', sets, mediumReps, time));
-    workout.addExercise(Exercise('Rows', sets, hardReps, time));
-    workout.addExercise(Exercise('Pullups', sets, hardReps, time));
-    workout.addExercise(Exercise('Chinups', sets, hardReps, time));
-    workout.addExercise(Exercise.timeOnly('Planks', sets, time));
+  //returns from map/json to an object (WeeklyRoutine)
+  factory WeeklyRoutine.fromMap(Map<String, Object?> json) {
+    //converts json to map list
 
-    //STRECHES AFTER UPPER WORKOUT (5)
-    workout.addStretch(Exercise.timeOnly('Arm And Wrist Stretch', 2, time / 2));
-    workout.addStretch(Exercise.timeOnly('Child Pose', 0, time));
-    workout.addStretch(Exercise.timeOnly('Cobra Pose', 0, time));
-    workout.addStretch(Exercise.timeOnly('Bicep Stretch', 0, time));
-    workout.addStretch(Exercise.timeOnly('Tricep Stretch', 0, time));
+    //need to figure out how to convert json to string back to json
+    var decodeList = jsonDecode(json[WeeklyRoutineFields.listOfWorkouts] as String);
+
+    var workoutJsonToList = decodeList as List;
+
+    List<Workout> _listOfWorkouts =
+        workoutJsonToList.map((workout) => Workout.fromJson(workout)).toList();
+
+    var formatter = DateFormat('yyyy-MM-dd'); // Save this to DB
+    DateTime dateCreated =
+        formatter.parse(json[WeeklyRoutineFields.dateCreated] as String);
+
+    return WeeklyRoutine(
+      id: json[WeeklyRoutineFields.id] as int?,
+      week: json[WeeklyRoutineFields.week] as int,
+      dateCreated: dateCreated,
+      listOfWorkouts: _listOfWorkouts,
+    );
   }
-
-  void addLowerExercises(
-      Workout workout, int sets, hardReps, mediumReps, easyReps, double time) {
-    //LOWER BODY EXERCISES (6)
-    workout.addExercise(Exercise('Calf Raises', sets, mediumReps, time));
-    workout.addExercise(Exercise('Glute Bridges', sets, easyReps, time));
-    workout.addExercise(Exercise('Squats', sets, mediumReps, time));
-    workout.addExercise(Exercise('Split Squats', sets, hardReps, time));
-    workout.addExercise(Exercise('Lateral Lunges', sets, mediumReps, time));
-    workout.addExercise(Exercise('Bicycle Crunches', sets, mediumReps, time));
-
-    //STRETCHES AFTER LOWER WORKOUT (4)
-    workout.addStretch(Exercise.timeOnly('Quad Stretch', 2, time / 2));
-    workout.addStretch(Exercise.timeOnly('Side Lunge Stretch', 2, time / 2));
-    workout.addStretch(Exercise.timeOnly('Hamstring Stretch', 2, time / 2));
-    workout.addStretch(Exercise.timeOnly('Butterfly', 0, time));
-  }
-
-  List<Workout> getWeekRoutine() => _weekRoutine;
-  int getWeek() => _week;
 }

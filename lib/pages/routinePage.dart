@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
-
+import 'dart:developer';
 import 'workoutPage.dart';
 import 'package:radons_workout_app/essentials/workoutCard.dart';
 import 'package:radons_workout_app/essentials/weeklyRoutine.dart';
 import 'package:radons_workout_app/essentials/workout.dart';
 import 'package:radons_workout_app/essentials/themeTool.dart';
+import 'package:radons_workout_app/db/databaseHelper.dart';
+import 'package:radons_workout_app/essentials/exercise.dart';
 
 class RoutinePage extends StatefulWidget {
+  static ThemeTool themeTool = ThemeTool();
+
+  final WeeklyRoutine? routine;
+
+  const RoutinePage({
+    Key? key,
+    this.routine,
+  }) : super(key: key);
+
   @override
   State<RoutinePage> createState() => _RoutinePageState();
-  static ThemeTool themeTool = ThemeTool();
 }
 
 class _RoutinePageState extends State<RoutinePage> {
@@ -18,24 +28,7 @@ class _RoutinePageState extends State<RoutinePage> {
   static Color primary = RoutinePage.themeTool.getPrimary();
   static Color secondary = RoutinePage.themeTool.getSecondary();
 
-  late WeeklyRoutine week;
-  late List<Workout> listOfWorkout;
-
-  void createRoutine(int weekCurr, DateTime dateCreated) {
-    week = WeeklyRoutine(weekCurr, dateCreated);
-    week.createWorkouts(7, 7, 7, 7, 60);
-
-    listOfWorkout = week.getWeekRoutine();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    DateTime dateCreated = DateTime.now();
-    createRoutine(0, dateCreated);
-  }
+  List<Workout>? listOfWorkouts;
 
   bool _customTileExpanded = false;
   String title = 'Routine';
@@ -78,42 +71,42 @@ class _RoutinePageState extends State<RoutinePage> {
                       //allows scrolling inside container full of daycards
                       child: Column(
                         children: [
-                          Padding(
+                          /* Padding(
                             //daycard
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[0]),
+                            child: WorkoutCard(listOfWorkouts![0]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[1]),
+                            child: WorkoutCard(listOfWorkouts![1]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[2]),
+                            child: WorkoutCard(listOfWorkouts![2]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[3]),
+                            child: WorkoutCard(listOfWorkouts![3]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[4]),
+                            child: WorkoutCard(listOfWorkouts![4]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[5]),
+                            child: WorkoutCard(listOfWorkouts![5]),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkout[6]),
-                          ),
+                            child: WorkoutCard(listOfWorkouts![6]),
+                          ),*/
                         ],
                       ),
                     ),
@@ -123,6 +116,7 @@ class _RoutinePageState extends State<RoutinePage> {
               SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () {
+                  //if button is pressed, send data of today's workout to workoutPage
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => WorkoutPage()));
                 },

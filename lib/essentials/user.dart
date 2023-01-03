@@ -8,9 +8,9 @@ class User {
 
   //if true, give test day
   //when finish, ask for date to begin
-  bool _firstTime = true;
+  bool _isNew = true;
 
-  void setFirstTime(bool firstTime) {
-    _firstTime = firstTime;
+  void setNew(bool isNew) {
+    _isNew = _isNew;
   }
 }

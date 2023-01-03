@@ -10,31 +10,51 @@
 //should be an animation and name for all exercises
 // _variable sets it to private
 // no underline means public
+import 'dart:developer';
+
 class Exercise {
-  var _animation;
-  String _name;
-  late double _time;
-  late int _reps;
-  late int _sets;
+  //var _animation;
+  final String name;
+
+  //warmup 0, main exercise 1, stretch 2
+  final int type;
+  final int sets;
+  final int reps;
+  final double time;
 
   //make exercise that uses time (3 sets of 1 min plank), time in seconds
-  Exercise(this._name, this._sets, this._reps, this._time);
-  Exercise.timeOnly(this._name, this._sets, this._time);
-  Exercise.repsOnly(this._name, this._sets, this._reps);
+  Exercise({required this.name,
+            required this.type,
+            required this.sets,
+            required this.reps,
+            required this.time});
 
-  String getName() {
-    return _name;
-  }
+  String getName() => name;
+  int getType() => type;
+  int getSet() => sets;
+  int getReps() => reps;
+  double getTime() => time;
 
-  double getTime() {
-    return _time;
-  }
+  //will have to figure out how to convert a gif file or anim file into json later
+  //parameters must be in exact order of the constructor that was made
+  Map<String, Object?> toJson() => {
+        'name': name,
+        'type': type,
+        'sets': sets,
+        'reps': reps,
+        'time': time,
+      };
 
-  int getReps() {
-    return _reps;
-  }
+  factory Exercise.fromJson(Map<String, Object?> json) {
+    //log('exercise - fromJson(): returning Exercise.fromJson');
+    //log('exercise - fromJson(): jsonExercName -> ${json['name']}');
 
-  int getSet() {
-    return _sets;
+    return Exercise(
+      name: json['name'] as String,
+      type: json['type'] as int,
+      sets: json['sets'] as int,
+      reps: json['reps'] as int,
+      time: json['time'] as double,
+    );
   }
 }
