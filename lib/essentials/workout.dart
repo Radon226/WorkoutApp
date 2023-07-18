@@ -26,6 +26,7 @@ class WorkoutFields {
   static const String restPerSet = 'restPerSet';
   static const String date = 'date';
   static const String listOfExercs = 'listOfExercs';
+  static const String isFinished = 'isFinished';
 }
 
 class Workout {
@@ -35,11 +36,12 @@ class Workout {
   bool isFinished = false;
   List<Exercise> listOfExcercs;
 
-  Workout(
-      {required this.name,
-      required this.restPerSet,
-      required this.date,
-      required this.listOfExcercs});
+  Workout
+  ({required this.name,
+    required this.restPerSet,
+    required this.date,
+    required this.listOfExcercs, 
+    required this.isFinished});
 
   void addExercise(Exercise exercise) {
     listOfExcercs.add(exercise);
@@ -74,7 +76,7 @@ class Workout {
       WorkoutFields.name: name,
       WorkoutFields.date: formattedDate,
       WorkoutFields.restPerSet: restPerSet,
-      'isFinished': isFinished,
+      WorkoutFields.isFinished: isFinished,
       WorkoutFields.listOfExercs: _listOfExcercs,
     };
 
@@ -97,6 +99,7 @@ class Workout {
         name: json[WorkoutFields.name] as String,
         restPerSet: json[WorkoutFields.restPerSet] as int,
         date: date,
-        listOfExcercs: _listOfExercs);
+        listOfExcercs: _listOfExercs,
+        isFinished: json[WorkoutFields.isFinished] as bool);
   }
 }

@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'workoutPage.dart';
-import 'package:radons_workout_app/essentials/workoutCard.dart';
+import '../db/DatabaseHelper.dart';
+import 'package:radons_workout_app/essentials/card.dart';
 import 'package:radons_workout_app/essentials/weeklyRoutine.dart';
-import 'package:radons_workout_app/essentials/workout.dart';
 import 'package:radons_workout_app/essentials/themeTool.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -12,16 +13,33 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  //store and display weeks of workouts
-  late List<WeeklyRoutine> listOfWeeks;
-
   static Color background = HistoryPage.themeTool.getBackground();
   static Color primary = HistoryPage.themeTool.getPrimary();
   static Color secondary = HistoryPage.themeTool.getSecondary();
 
-  bool _customTileExpanded = false;
   String title = 'Progress';
   double appBarHeight = HistoryPage.themeTool.getAppbarHeight();
+
+  //store and display weeks of workouts
+  late List<WeeklyRoutine> listOfWeeks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getAllWeeklyRoutines();
+  }
+
+  void getAllWeeklyRoutines() async {
+    log('historyPage - getAllWeeklyRoutines: starting');
+
+    List<WeeklyRoutine> list = await DatabaseHelper.instance.readAllWeeklyRoutines();
+
+    setState(() {
+      listOfWeeks = list;
+    });
+
+    log('historyPage - getAllWeeklyRoutines: list ${list.toString()} || list being used ${listOfWeeks.toString()}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +63,23 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Column(
             children: [
               Column(
+                //column which holds week 1 and purple container
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                    ),
-                    child: HistoryPage.themeTool.writeSubtitle('', false),
-                  ),
                   SizedBox(
-                    height: 370,
+                    height: 650,
                     child: SingleChildScrollView(
-                      //should list all weekcards
+                      //allows scrolling inside container full of daycards
                       child: Column(
-                        children: [],
+                        children: [
+                          for (var i = 0; i < listOfWeeks.length; i++)
+                            //dayCard
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 5, right: 5),
+                              child: WeeklyCard(listOfWeeks[i]),
+                            ),
+                        ],
                       ),
                     ),
                   ),

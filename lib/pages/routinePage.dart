@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 //import 'package:intl/intl.dart';
 import 'dart:developer';
 import 'workoutPage.dart';
-import 'package:radons_workout_app/essentials/workoutCard.dart';
+import 'package:radons_workout_app/essentials/card.dart';
 import 'package:radons_workout_app/essentials/weeklyRoutine.dart';
 import 'package:radons_workout_app/essentials/workout.dart';
 import 'package:radons_workout_app/essentials/themeTool.dart';
-import 'package:radons_workout_app/db/databaseHelper.dart';
-import 'package:radons_workout_app/essentials/exercise.dart';
 
 class RoutinePage extends StatefulWidget {
   static ThemeTool themeTool = ThemeTool();
 
-  final WeeklyRoutine? routine;
+  final WeeklyRoutine weeklyRoutine;
 
   const RoutinePage({
     Key? key,
-    this.routine,
+    required this.weeklyRoutine,
   }) : super(key: key);
 
   @override
-  State<RoutinePage> createState() => _RoutinePageState();
+  State<RoutinePage> createState() =>
+      _RoutinePageState(weeklyRoutine: weeklyRoutine);
 }
 
 class _RoutinePageState extends State<RoutinePage> {
@@ -29,10 +28,42 @@ class _RoutinePageState extends State<RoutinePage> {
   static Color secondary = RoutinePage.themeTool.getSecondary();
 
   List<Workout>? listOfWorkouts;
+  WeeklyRoutine weeklyRoutine;
+  late Workout todaysWorkout;
+
+  _RoutinePageState({required this.weeklyRoutine});
 
   bool _customTileExpanded = false;
   String title = 'Routine';
   double appBarHeight = RoutinePage.themeTool.getAppbarHeight();
+
+  @override
+  void initState() {
+    super.initState();
+    log('routinePage - initState(): id ${weeklyRoutine.getId()}');
+    getListOfWorkouts();
+    getTodaysWorkout();
+  }
+
+  void getListOfWorkouts() async {
+    setState(() {
+      listOfWorkouts = weeklyRoutine.getlistOfWorkouts();
+    });
+  }
+
+  void getTodaysWorkout() async {
+    DateTime today = DateTime
+        .now(); //for some reason, this gives one day ahead of act today (global time?)
+
+    for (int i = 0; i < listOfWorkouts!.length; i++) {
+      if (DateUtils.isSameDay(listOfWorkouts![i].getDate(), today)) {
+        setState(() {
+          todaysWorkout = listOfWorkouts![i];
+        });
+        log('routinePage - getTodaysWorkout(): todays workout is ${todaysWorkout.getName()}');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,50 +94,20 @@ class _RoutinePageState extends State<RoutinePage> {
                     padding: const EdgeInsets.only(
                       top: 20,
                     ),
-                    child: RoutinePage.themeTool.writeSubtitle('Week 1', false),
+                    child: RoutinePage.themeTool.writeSubtitle('Week ${weeklyRoutine.getWeek()}', false),
                   ),
                   SizedBox(
-                    height: 370,
+                    height: 550,
                     child: SingleChildScrollView(
                       //allows scrolling inside container full of daycards
                       child: Column(
                         children: [
-                          /* Padding(
-                            //daycard
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![0]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![1]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![2]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![3]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![4]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![5]),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, left: 5, right: 5),
-                            child: WorkoutCard(listOfWorkouts![6]),
-                          ),*/
+                          for (var i = 0; i < listOfWorkouts!.length; i++)  
+                            //dayCard
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                              child: WorkoutCard(listOfWorkouts![i]),
+                            ),
                         ],
                       ),
                     ),
@@ -117,8 +118,10 @@ class _RoutinePageState extends State<RoutinePage> {
               ElevatedButton(
                 onPressed: () {
                   //if button is pressed, send data of today's workout to workoutPage
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => WorkoutPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => WorkoutPage(weeklyRoutine: weeklyRoutine, workout: todaysWorkout)));
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(

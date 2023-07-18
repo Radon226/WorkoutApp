@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 class ThemeTool {
   final double _appBarHeight = 100;
 
-  final Color _backgroundColor = Colors.white; //main background
+  final Color _backgroundColor = Color.fromARGB(255, 255, 249, 78); //main background
   final Color _primaryColor = Colors.lightBlueAccent; //for appbar and container
-  final Color _secondaryColor = Color.fromARGB(
-      255, 125, 214, 255); //buttons and small interactable widgets
+  final Color _secondaryColor = Color.fromARGB(255, 125, 214, 255); //buttons and small interactable widgets
 
   final TextStyle _strTitle = TextStyle(
     fontSize: 65,

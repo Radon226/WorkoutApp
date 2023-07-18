@@ -33,8 +33,7 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Future<void> deleteDatabase() =>
-      databaseFactory.deleteDatabase(databaseName);
+  Future<void> deleteDatabase() => databaseFactory.deleteDatabase(databaseName);
 
   //get database from path and open it
   Future<Database> _initDB(String filePath) async {
@@ -42,7 +41,6 @@ class DatabaseHelper {
     final path = join(dbPath, filePath);
 
     log('DataBaseHelper - _initDB(): Joined both db and file path');
-
     log('DataBaseHelper - _initDB(): Opening database');
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
@@ -69,11 +67,8 @@ class DatabaseHelper {
 
     log('DatabaseHelper - create(): Inserting weeklyRoutine into DB');
 
-    final id = await db.insert(
-      tableWeeklyRoutines,
-      weeklyRoutine.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.ignore
-    );
+    final id = await db.insert(tableWeeklyRoutines, weeklyRoutine.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.ignore);
 
     log('DataBaseHelper - create(): Insertion complete -> copying id...');
 
@@ -109,6 +104,8 @@ class DatabaseHelper {
 
   Future<int> update(WeeklyRoutine weeklyRoutine) async {
     final db = await instance.database;
+
+    log('DataBaseHelper - update(): Updating WeeklyRoutine ${weeklyRoutine.getWeek()}');
 
     return db.update(
       tableWeeklyRoutines,
